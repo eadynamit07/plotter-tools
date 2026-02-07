@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://stift-plotter-gcode.de/</loc>
+    <loc>https://plotter-tools.pages.dev/</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://stift-plotter-gcode.de/svg-to-gcode.html</loc>
+    <loc>https://plotter-tools.pages.dev/svg-to-gcode.html</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://stift-plotter-gcode.de/image-to-gcode.html</loc>
+    <loc>https://plotter-tools.pages.dev/image-to-gcode.html</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://stift-plotter-gcode.de/text-to-gcode.html</loc>
+    <loc>https://plotter-tools.pages.dev/text-to-gcode.html</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://stift-plotter-gcode.de/tutorial.html</loc>
+    <loc>https://plotter-tools.pages.dev/tutorial.html</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://stift-plotter-gcode.de/faq.html</loc>
+    <loc>https://plotter-tools.pages.dev/faq.html</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://stift-plotter-gcode.de/examples.html</loc>
+    <loc>https://plotter-tools.pages.dev/examples.html</loc>
     <lastmod>2026-02-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
