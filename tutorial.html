@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- SEO Meta Tags -->
-    <title>Tutorial & Anleitung | Stift-Plotter G-Code Tools</title>
-    <meta name="description" content="Komplette Anleitung für Stift-Plotter mit 3D-Drucker. Hardware-Setup, Software-Einrichtung und Schritt-für-Schritt Tutorials für G-Code Generierung.">
-    <meta name="keywords" content="Stift-Plotter Tutorial, 3D-Drucker Plotter Anleitung, Ender 3 Plotter Setup, G-Code Tutorial, Stift-Aufsatz montieren">
+    <title>FAQ - Häufige Fragen | Stift-Plotter G-Code Tools</title>
+    <meta name="description" content="Antworten auf häufige Fragen zum Stift-Plotter Setup, G-Code Generierung und 3D-Drucker als Plotter. Troubleshooting und Tipps.">
+    <meta name="keywords" content="Stift-Plotter FAQ, G-Code Fragen, 3D-Drucker Plotter Hilfe, Ender 3 Plotter Probleme">
     <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://plotter-tools.pages.dev/tutorial.html">
+    <link rel="canonical" href="https://plotter-tools.pages.dev/faq.html">
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
@@ -27,385 +27,363 @@
         <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Zurück</a>
         
         <header style="text-align: center; margin-bottom: 3rem;">
-            <h1><i class="fas fa-graduation-cap"></i> Tutorial & Anleitung</h1>
-            <p style="color: var(--text-secondary); font-size: 1.1rem;">Alles, was du wissen musst, um deinen 3D-Drucker als Stift-Plotter zu nutzen</p>
+            <h1><i class="fas fa-question-circle"></i> Häufig gestellte Fragen (FAQ)</h1>
+            <p style="color: var(--text-secondary); font-size: 1.1rem;">Antworten auf die wichtigsten Fragen rund um Stift-Plotter</p>
         </header>
 
         <div style="max-width: 900px; margin: 0 auto;">
             
-            <!-- Hardware Setup Section -->
-            <section class="tutorial-section">
-                <h2><i class="fas fa-tools"></i> 1. Hardware-Setup</h2>
+            <!-- General Questions -->
+            <section class="faq-section">
+                <h2><i class="fas fa-info-circle"></i> Allgemeine Fragen</h2>
                 
-                <h3>Benötigte Materialien:</h3>
-                <ul class="feature-list">
-                    <li><i class="fas fa-check-circle"></i> <strong>3D-Drucker</strong> (z.B. Ender 3, Ender 3 Pro, CR-10, Prusa i3 etc.)</li>
-                    <li><i class="fas fa-check-circle"></i> <strong>Stift-Aufsatz</strong> oder 3D-gedruckter Stifthalter</li>
-                    <li><i class="fas fa-check-circle"></i> <strong>Stifte/Marker</strong> (Fineliner, Gelschreiber, Filzstifte)</li>
-                    <li><i class="fas fa-check-circle"></i> <strong>Papier</strong> oder andere Zeichenfläche</li>
-                    <li><i class="fas fa-check-circle"></i> <strong>Klebeband/Clips</strong> zum Fixieren des Papiers</li>
-                </ul>
-
-                <h3>Stift-Aufsatz montieren:</h3>
-                <ol class="tutorial-steps">
-                    <li><strong>Druckkopf vorbereiten:</strong> Entferne die Düse oder montiere einen speziellen Stifthalter am Druckkopf</li>
-                    <li><strong>Stift einsetzen:</strong> Befestige den Stift so, dass er das Papier leicht berührt, wenn die Z-Achse auf 0.5mm steht</li>
-                    <li><strong>Z-Höhe kalibrieren:</strong> Teste die Höhe, indem du den Stift manuell absenkst. Er sollte Linien zeichnen können ohne zu viel Druck auszuüben</li>
-                    <li><strong>Papier fixieren:</strong> Befestige das Papier mit Klebeband oder Klammern auf dem Druckbett</li>
-                </ol>
-            </section>
-
-            <!-- Software Setup Section -->
-            <section class="tutorial-section">
-                <h2><i class="fas fa-laptop-code"></i> 2. Software-Einrichtung</h2>
-                
-                <h3>G-Code an den Drucker senden:</h3>
-                <ol class="tutorial-steps">
-                    <li><strong>Datei generieren:</strong> Nutze eines der Tools auf dieser Webseite, um G-Code zu erstellen</li>
-                    <li><strong>Auf SD-Karte speichern:</strong> Speichere die .gcode Datei auf eine SD-Karte</li>
-                    <li><strong>Alternative - USB:</strong> Nutze Software wie OctoPrint, Pronterface oder Repetier-Host für direkte USB-Verbindung</li>
-                    <li><strong>Drucker starten:</strong> Wähle die Datei am Drucker-Display oder über die Software</li>
-                </ol>
-
-                <h3>Empfohlene Einstellungen:</h3>
-                <div class="settings-table">
-                    <table>
-                        <tr>
-                            <th>Parameter</th>
-                            <th>Empfohlener Wert</th>
-                            <th>Beschreibung</th>
-                        </tr>
-                        <tr>
-                            <td><strong>Z-Down</strong></td>
-                            <td>0.5 mm</td>
-                            <td>Stift berührt Papier leicht</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Z-Up</strong></td>
-                            <td>5.0 mm</td>
-                            <td>Stift hebt deutlich ab</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Schreibgeschwindigkeit</strong></td>
-                            <td>1500 mm/min</td>
-                            <td>Langsam = genauer</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Reisegeschwindigkeit</strong></td>
-                            <td>3000 mm/min</td>
-                            <td>Schneller um Zeit zu sparen</td>
-                        </tr>
-                    </table>
-                </div>
-            </section>
-
-            <!-- Tool Tutorials Section -->
-            <section class="tutorial-section">
-                <h2><i class="fas fa-rocket"></i> 3. Erste Schritte mit den Tools</h2>
-                
-                <div class="tool-tutorial">
-                    <h3><i class="fas fa-draw-polygon"></i> SVG zu G-Code</h3>
-                    <ol class="tutorial-steps">
-                        <li>Öffne das <a href="svg-to-gcode.html">SVG zu G-Code Tool</a></li>
-                        <li>Lade eine SVG-Datei hoch (z.B. aus Inkscape, Adobe Illustrator oder Canva)</li>
-                        <li>Stelle die Parameter ein (Z-Höhen, Geschwindigkeiten, Skalierung)</li>
-                        <li>Siehst du die Vorschau in Cyan (Schreiben) und Orange (Reisen)</li>
-                        <li>Klicke auf "G-Code Generieren" und dann "Herunterladen"</li>
-                    </ol>
-                    <p class="tip"><i class="fas fa-lightbulb"></i> <strong>Tipp:</strong> SVGs sollten nur Pfade enthalten, keine Füllungen. In Inkscape: Objekt → Pfad → Kontur in Pfad umwandeln</p>
-                </div>
-
-                <div class="tool-tutorial">
-                    <h3><i class="fas fa-image"></i> Bild zu G-Code</h3>
-                    <ol class="tutorial-steps">
-                        <li>Öffne das <a href="image-to-gcode.html">Bild zu G-Code Tool</a></li>
-                        <li>Lade ein Bild hoch (JPG, PNG etc.)</li>
-                        <li>Wähle einen Zeichenstil: <strong>Konturen</strong> (Kanten), <strong>Schraffur</strong> (Linien) oder <strong>Stippling</strong> (Punkte)</li>
-                        <li>Passe die stilspezifischen Einstellungen an</li>
-                        <li>Generiere und lade den G-Code herunter</li>
-                    </ol>
-                    <p class="tip"><i class="fas fa-lightbulb"></i> <strong>Tipp:</strong> Kontrastreiche Bilder funktionieren am besten. Probiere verschiedene Stile aus!</p>
-                </div>
-
-                <div class="tool-tutorial">
-                    <h3><i class="fas fa-font"></i> Text zu G-Code</h3>
-                    <ol class="tutorial-steps">
-                        <li>Öffne das <a href="text-to-gcode.html">Text zu G-Code Tool</a></li>
-                        <li>Gib deinen Text direkt ein</li>
-                        <li>Wähle eine Schriftart (Simplex, Complex oder Script)</li>
-                        <li>Stelle Schriftgröße und Zeilenbreite ein (automatischer Umbruch!)</li>
-                        <li>Generiere und lade den G-Code herunter</li>
-                    </ol>
-                    <p class="tip"><i class="fas fa-lightbulb"></i> <strong>Tipp:</strong> Die Script-Schrift sieht besonders schön aus für handgeschriebene Notizen!</p>
-                </div>
-            </section>
-
-            <!-- Tips & Tricks Section -->
-            <section class="tutorial-section">
-                <h2><i class="fas fa-magic"></i> 4. Tipps & Tricks</h2>
-                
-                <div class="tips-grid">
-                    <div class="tip-card">
-                        <h4><i class="fas fa-pen"></i> Stift-Auswahl</h4>
-                        <p>Fineliner (0.3-0.5mm) ergeben präzise Linien. Gelschreiber sind weicher und schonen das Papier. Filzstifte für große, ausdrucksstarke Zeichnungen.</p>
+                <details class="faq-item">
+                    <summary>Was ist ein Stift-Plotter?</summary>
+                    <div class="faq-answer">
+                        <p>Ein Stift-Plotter ist ein 3D-Drucker, der statt einer Düse einen Stift verwendet, um auf Papier zu zeichnen. Du befestigst einen Stift am Druckkopf und der Drucker bewegt ihn präzise über das Papier, um Zeichnungen, Texte oder Grafiken zu erstellen.</p>
                     </div>
-                    
-                    <div class="tip-card">
-                        <h4><i class="fas fa-compress-arrows-alt"></i> Druckgröße</h4>
-                        <p>Fange klein an (50-100mm) um Zeit zu sparen. Nutze die Skalierungsfunktion in den Tools um Größen anzupassen.</p>
-                    </div>
-                    
-                    <div class="tip-card">
-                        <h4><i class="fas fa-tachometer-alt"></i> Geschwindigkeit</h4>
-                        <p>Langsamer = genauer, aber dauert länger. Finde die perfekte Balance für dein Setup. Starte mit 1500 mm/min.</p>
-                    </div>
-                    
-                    <div class="tip-card">
-                        <h4><i class="fas fa-layer-group"></i> Papier fixieren</h4>
-                        <p>Nutze Malerkrepp statt Tesafilm - es lässt sich leichter entfernen. Papier muss absolut flach liegen!</p>
-                    </div>
-                    
-                    <div class="tip-card">
-                        <h4><i class="fas fa-flask"></i> Experimentieren</h4>
-                        <p>Probiere verschiedene Papiersorten: Aquarellpapier, Karton, sogar Stoff! Teste auch verschiedene Stifte.</p>
-                    </div>
-                    
-                    <div class="tip-card">
-                        <h4><i class="fas fa-save"></i> Backup</h4>
-                        <p>Speichere deine G-Code Dateien! So kannst du coole Designs jederzeit neu plotten.</p>
-                    </div>
-                </div>
-            </section>
+                </details>
 
-            <!-- Troubleshooting Section -->
-            <section class="tutorial-section">
-                <h2><i class="fas fa-wrench"></i> 5. Problemlösungen</h2>
-                
-                <div class="troubleshooting">
-                    <div class="problem">
-                        <h4><i class="fas fa-exclamation-triangle"></i> Stift zeichnet nicht</h4>
+                <details class="faq-item">
+                    <summary>Funktioniert das mit jedem 3D-Drucker?</summary>
+                    <div class="faq-answer">
+                        <p>Ja! Die meisten FDM/FFF 3D-Drucker können als Stift-Plotter verwendet werden. Besonders gut geeignet sind:</p>
                         <ul>
-                            <li>Z-Down Höhe erhöhen (näher ans Papier)</li>
-                            <li>Prüfe ob der Stift schreibt (von Hand testen)</li>
-                            <li>Papier könnte gewellt sein - neu fixieren</li>
+                            <li><strong>Ender 3 / Ender 3 Pro / Ender 3 V2</strong></li>
+                            <li><strong>CR-10 Serie</strong></li>
+                            <li><strong>Prusa i3 MK3S</strong></li>
+                            <li><strong>Anycubic Mega</strong></li>
+                            <li>Und viele weitere!</li>
+                        </ul>
+                        <p>Wichtig ist nur, dass der Drucker G-Code versteht (fast alle tun das).</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Brauche ich spezielle Hardware?</summary>
+                    <div class="faq-answer">
+                        <p>Du brauchst:</p>
+                        <ul>
+                            <li>Einen <strong>Stifthalter</strong> - du kannst einen kaufen oder selbst 3D-drucken (viele kostenlose Modelle auf Thingiverse)</li>
+                            <li><strong>Stifte</strong> - Fineliner, Gelschreiber oder Marker funktionieren</li>
+                            <li><strong>Papier</strong> und etwas zum Fixieren (Klebeband)</li>
+                        </ul>
+                        <p>Mehr brauchst du nicht! Die Software ist komplett kostenlos und läuft im Browser.</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Sind meine Daten sicher?</summary>
+                    <div class="faq-answer">
+                        <p><strong>Absolut!</strong> Alle Tools auf dieser Webseite arbeiten zu 100% lokal in deinem Browser. Es werden <strong>keine Daten</strong> an Server gesendet. Deine SVG-Dateien, Bilder und Texte bleiben komplett auf deinem Computer.</p>
+                    </div>
+                </details>
+            </section>
+
+            <!-- Technical Questions -->
+            <section class="faq-section">
+                <h2><i class="fas fa-cogs"></i> Technische Fragen</h2>
+                
+                <details class="faq-item">
+                    <summary>Welche Dateiformat unterstützen die Tools?</summary>
+                    <div class="faq-answer">
+                        <ul>
+                            <li><strong>SVG Tool:</strong> .svg Dateien (Vektorgrafiken)</li>
+                            <li><strong>Bild Tool:</strong> .jpg, .png, .gif, .bmp und andere gängige Bildformate</li>
+                            <li><strong>Text Tool:</strong> Direkteingabe von Text (keine Datei nötig)</li>
+                        </ul>
+                        <p>Alle Tools erzeugen Standard <strong>.gcode</strong> Dateien, die mit jedem G-Code-kompatiblen 3D-Drucker funktionieren.</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Was bedeuten Z-Down und Z-Up?</summary>
+                    <div class="faq-answer">
+                        <p><strong>Z-Down:</strong> Die Höhe, bei der der Stift das Papier berührt und zeichnet. Standard: 0.5mm</p>
+                        <p><strong>Z-Up:</strong> Die Höhe, bei der der Stift vom Papier abhebt (beim Reisen zwischen Linien). Standard: 5.0mm</p>
+                        <p>Diese Werte musst du eventuell anpassen, je nachdem wie dein Stift montiert ist.</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Wie finde ich die richtige Geschwindigkeit?</summary>
+                    <div class="faq-answer">
+                        <p><strong>Schreibgeschwindigkeit (Feed Rate):</strong></p>
+                        <ul>
+                            <li>Langsam (1000-1500 mm/min) = genauer, aber dauert länger</li>
+                            <li>Mittel (1500-2000 mm/min) = guter Kompromiss ✓</li>
+                            <li>Schnell (2000-3000 mm/min) = schneller, aber weniger präzise</li>
+                        </ul>
+                        <p><strong>Reisegeschwindigkeit (Travel Rate):</strong> Kann schneller sein (3000-5000 mm/min), da der Stift nicht zeichnet.</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Mein SVG wird nicht richtig konvertiert. Was tun?</summary>
+                    <div class="faq-answer">
+                        <p>Häufige Probleme und Lösungen:</p>
+                        <ul>
+                            <li><strong>Text im SVG:</strong> Wandle Text erst in Pfade um (Inkscape: Pfad → Objekt in Pfad umwandeln)</li>
+                            <li><strong>Gefüllte Flächen:</strong> Konvertiere Füllungen in Konturen (Inkscape: Pfad → Kontur in Pfad umwandeln)</li>
+                            <li><strong>Komplexe Effekte:</strong> Wende alle Effekte an und vereinfache die Pfade</li>
+                            <li><strong>Mehrere Ebenen:</strong> Fasse alle Ebenen zusammen oder exportiere nur die sichtbare Ebene</li>
                         </ul>
                     </div>
-                    
-                    <div class="problem">
-                        <h4><i class="fas fa-exclamation-triangle"></i> Linien sind verwischt</h4>
-                        <ul>
-                            <li>Z-Down Höhe verringern (weniger Druck)</li>
-                            <li>Schreibgeschwindigkeit reduzieren</li>
-                            <li>Stift könnte zu weich sein - härtere Spitze verwenden</li>
-                        </ul>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Kann ich mehrere Farben/Stifte verwenden?</summary>
+                    <div class="faq-answer">
+                        <p>Ja! Du kannst:</p>
+                        <ol>
+                            <li>Verschiedene Ebenen deines Designs separat als G-Code exportieren</li>
+                            <li>Den ersten Teil drucken, dann Pause (M0 Befehl)</li>
+                            <li>Stift wechseln</li>
+                            <li>Weitermachen oder die nächste Datei starten</li>
+                        </ol>
+                        <p>Tipp: Nutze Register-Markierungen auf dem Papier, um die Ausrichtung beizubehalten!</p>
                     </div>
-                    
-                    <div class="problem">
-                        <h4><i class="fas fa-exclamation-triangle"></i> Unterteilte Linien</h4>
-                        <ul>
-                            <li>Z-Up Höhe zu niedrig - Stift berührt Papier beim Reisen</li>
-                            <li>Erhöhe Z-Up auf mindestens 5mm</li>
-                        </ul>
-                    </div>
-                    
-                    <div class="problem">
-                        <h4><i class="fas fa-exclamation-triangle"></i> Drucker fährt außerhalb des Betts</h4>
-                        <ul>
-                            <li>Skalierung zu hoch eingestellt</li>
-                            <li>Start G-Code könnte falsche Offsets haben</li>
-                            <li>Reduziere die Skalierung in den Tool-Einstellungen</li>
-                        </ul>
-                    </div>
-                </div>
+                </details>
             </section>
 
-            <!-- Next Steps -->
-            <section class="tutorial-section" style="text-align: center; background: linear-gradient(135deg, rgba(187, 134, 252, 0.1) 0%, rgba(3, 218, 198, 0.1) 100%); padding: 2rem; border-radius: 15px;">
-                <h2><i class="fas fa-star"></i> Bereit loszulegen?</h2>
-                <p style="margin-bottom: 2rem; color: var(--text-secondary);">Wähle eines der Tools und erstelle dein erstes Plotter-Kunstwerk!</p>
+            <!-- Usage Questions -->
+            <section class="faq-section">
+                <h2><i class="fas fa-paint-brush"></i> Nutzung & Kreativität</h2>
+                
+                <details class="faq-item">
+                    <summary>Welche Stifte funktionieren am besten?</summary>
+                    <div class="faq-answer">
+                        <p><strong>Für präzise Linien:</strong></p>
+                        <ul>
+                            <li>Fineliner (0.3-0.5mm) - z.B. Staedtler Pigment Liner</li>
+                            <li>Gelschreiber - sanfter Tintenfluss</li>
+                        </ul>
+                        <p><strong>Für Kunst & Experimente:</strong></p>
+                        <ul>
+                            <li>Brush Pens - für kalligrafische Effekte</li>
+                            <li>Metallic Marker - auf dunklem Papier</li>
+                            <li>Filzstifte - für farbenfrohe, große Zeichnungen</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Was kann ich alles plotten?</summary>
+                    <div class="faq-answer">
+                        <p>Die Möglichkeiten sind endlos!</p>
+                        <ul>
+                            <li><strong>Kunst:</strong> Portraits, Landschaften, abstrakte Designs</li>
+                            <li><strong>Geschenke:</strong> Personalisierte Grußkarten, Poster</li>
+                            <li><strong>Bildung:</strong> Diagramme, Graphen, technische Zeichnungen</li>
+                            <li><strong>Kalligrafie:</strong> Handgeschriebene Zitate, Gedichte</li>
+                            <li><strong>Dekoration:</strong> Wandkunst, Scrapbooking</li>
+                            <li><strong>Prototyping:</strong> UI-Mockups, Logo-Designs</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Wie lange dauert ein typischer Plot?</summary>
+                    <div class="faq-answer">
+                        <p>Das hängt stark von der Komplexität ab:</p>
+                        <ul>
+                            <li><strong>Einfacher Text:</strong> 2-5 Minuten</li>
+                            <li><strong>Logo/Einfaches SVG:</strong> 5-15 Minuten</li>
+                            <li><strong>Portrait/Bild (Edge Detection):</strong> 15-30 Minuten</li>
+                            <li><strong>Komplexe Schraffur:</strong> 30-60 Minuten</li>
+                            <li><strong>Detailliertes Stippling:</strong> 1-3 Stunden</li>
+                        </ul>
+                        <p>Tipp: Starte mit kleinen, einfachen Designs um die Einstellungen zu testen!</p>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Kann ich auch auf anderen Oberflächen zeichnen?</summary>
+                    <div class="faq-answer">
+                        <p>Ja! Experimentiere mit:</p>
+                        <ul>
+                            <li><strong>Verschiedene Papiersorten:</strong> Aquarellpapier, Karton, Kraftpapier</li>
+                            <li><strong>Stoff:</strong> T-Shirts, Leinwand (mit Stoffmarkern)</li>
+                            <li><strong>Holz:</strong> (mit geeigneten Stiften)</li>
+                            <li><strong>Whiteboards:</strong> (mit Whiteboard-Markern)</li>
+                        </ul>
+                        <p>Wichtig: Die Oberfläche muss flach und der Stift muss darauf schreiben können!</p>
+                    </div>
+                </details>
+            </section>
+
+            <!-- Troubleshooting -->
+            <section class="faq-section">
+                <h2><i class="fas fa-wrench"></i> Problemlösungen</h2>
+                
+                <details class="faq-item">
+                    <summary>Der Stift macht keine durchgehenden Linien</summary>
+                    <div class="faq-answer">
+                        <p><strong>Mögliche Ursachen:</strong></p>
+                        <ul>
+                            <li>Z-Down ist zu hoch eingestellt → Wert erhöhen (z.B. auf 1.0mm)</li>
+                            <li>Papier ist gewellt oder nicht flach → Neu fixieren</li>
+                            <li>Stift schreibt nicht richtig → Von Hand testen und ggf. austauschen</li>
+                            <li>Zu schnelle Geschwindigkeit → Feed Rate reduzieren</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Der Drucker bewegt sich außerhalb des Druckbereichs</summary>
+                    <div class="faq-answer">
+                        <p><strong>Lösungen:</strong></p>
+                        <ul>
+                            <li>Skalierung in den Tool-Einstellungen reduzieren</li>
+                            <li>Prüfe das Start G-Code - entferne oder passe Offset-Befehle an</li>
+                            <li>Stelle sicher, dass dein Druckbett groß genug für die Zeichnung ist</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Die Vorschau zeigt nichts an</summary>
+                    <div class="faq-answer">
+                        <p><strong>Checkliste:</strong></p>
+                        <ul>
+                            <li>Hast du auf "G-Code Generieren" geklickt?</li>
+                            <li>Ist die Datei korrekt hochgeladen? (Dateiname sollte sichtbar sein)</li>
+                            <li>Bei SVG: Enthält die Datei tatsächlich Pfade? (öffne sie zur Kontrolle in Inkscape)</li>
+                            <li>Browser-Konsole checken (F12) für Fehlermeldungen</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details class="faq-item">
+                    <summary>Der G-Code Download funktioniert nicht</summary>
+                    <div class="faq-answer">
+                        <p><strong>Versuche Folgendes:</strong></p>
+                        <ul>
+                            <li>Stelle sicher, dass du zuerst "G-Code Generieren" geklickt hast</li>
+                            <li>Prüfe ob dein Browser Downloads erlaubt (Pop-up-Blocker?)</li>
+                            <li>Versuche es in einem anderen Browser (Chrome, Firefox, Edge)</li>
+                            <li>Leere deinen Browser-Cache und lade die Seite neu</li>
+                        </ul>
+                    </div>
+                </details>
+            </section>
+
+            <!-- Support Section -->
+            <section class="faq-section" style="text-align: center; background: linear-gradient(135deg, rgba(187, 134, 252, 0.1) 0%, rgba(3, 218, 198, 0.1) 100%); padding: 2rem; border-radius: 15px; border: none;">
+                <h2><i class="fas fa-life-ring"></i> Weitere Hilfe</h2>
+                <p style="margin-bottom: 2rem; color: var(--text-secondary);">Deine Frage wurde nicht beantwortet?</p>
                 <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-                    <a href="svg-to-gcode.html" class="primary-btn"><i class="fas fa-draw-polygon"></i> SVG Tool</a>
-                    <a href="image-to-gcode.html" class="primary-btn"><i class="fas fa-image"></i> Bild Tool</a>
-                    <a href="text-to-gcode.html" class="primary-btn"><i class="fas fa-font"></i> Text Tool</a>
+                    <a href="tutorial.html" class="primary-btn"><i class="fas fa-graduation-cap"></i> Zum Tutorial</a>
+                    <a href="examples.html" class="primary-btn"><i class="fas fa-images"></i> Beispiele ansehen</a>
+                    <a href="index.html" class="primary-btn"><i class="fas fa-home"></i> Zur Startseite</a>
                 </div>
-                <p style="margin-top: 2rem; font-size: 0.9rem;">
-                    <a href="faq.html" style="color: var(--primary-color);">Zur FAQ →</a> | 
-                    <a href="examples.html" style="color: var(--primary-color);">Beispiele ansehen →</a>
-                </p>
             </section>
 
         </div>
     </div>
 
     <style>
-        .tutorial-section {
-            margin-bottom: 4rem;
+        .faq-section {
+            margin-bottom: 3rem;
             padding-bottom: 2rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .tutorial-section:last-child {
-            border-bottom: none;
-        }
-
-        .tutorial-section h2 {
+        .faq-section h2 {
             font-size: 2rem;
             margin-bottom: 1.5rem;
             color: var(--primary-color);
         }
 
-        .tutorial-section h3 {
-            font-size: 1.5rem;
-            margin-top: 2rem;
+        .faq-item {
+            background: linear-gradient(145deg, #2a2a3e 0%, #1f1f2e 100%);
             margin-bottom: 1rem;
+            border-radius: 12px;
+            border: 1px solid rgba(187, 134, 252, 0.2);
+            overflow: hidden;
+            transition: all 0.3s ease;
         }
 
-        .feature-list {
-            list-style: none;
-            padding: 0;
+        .faq-item:hover {
+            border-color: rgba(187, 134, 252, 0.5);
+            box-shadow: 0 5px 20px rgba(187, 134, 252, 0.2);
         }
 
-        .feature-list li {
-            padding: 0.8rem 0;
+        .faq-item summary {
+            padding: 1.3rem 1.5rem;
+            cursor: pointer;
             font-size: 1.1rem;
-        }
-
-        .feature-list i {
-            color: var(--secondary-color);
-            margin-right: 0.8rem;
-        }
-
-        .tutorial-steps {
-            counter-reset: step-counter;
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .tutorial-steps li {
-            counter-increment: step-counter;
-            margin-bottom: 1.5rem;
-            padding-left: 3rem;
+            font-weight: 600;
+            color: #fff;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
             position: relative;
-            line-height: 1.6;
         }
 
-        .tutorial-steps li::before {
-            content: counter(step-counter);
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 2rem;
-            height: 2rem;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border-radius: 50%;
+        .faq-item summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .faq-item summary::before {
+            content: '+';
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            font-size: 1rem;
-        }
-
-        .settings-table {
-            overflow-x: auto;
-            margin: 1.5rem 0;
-        }
-
-        .settings-table table {
-            width: 100%;
-            border-collapse: collapse;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .settings-table th {
+            width: 1.8rem;
+            height: 1.8rem;
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 50%;
+            font-size: 1.3rem;
+            font-weight: bold;
             color: #000;
-            padding: 1rem;
-            text-align: left;
-            font-weight: 600;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
         }
 
-        .settings-table td {
-            padding: 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        .faq-item[open] summary::before {
+            content: '−';
+            transform: rotate(180deg);
         }
 
-        .settings-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .tool-tutorial {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 2rem;
-            border-radius: 15px;
-            margin-bottom: 2rem;
-            border-left: 4px solid var(--primary-color);
-        }
-
-        .tool-tutorial h3 {
-            margin-top: 0;
+        .faq-item summary:hover {
             color: var(--primary-color);
         }
 
-        .tip {
-            background: rgba(3, 218, 198, 0.1);
-            padding: 1rem;
-            border-radius: 10px;
-            border-left: 4px solid var(--secondary-color);
-            margin-top: 1rem;
+        .faq-answer {
+            padding: 0 1.5rem 1.5rem 4.3rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            animation: fadeIn 0.3s ease;
         }
 
-        .tips-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1.5rem;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .tip-card {
-            background: linear-gradient(145deg, #2a2a3e 0%, #1f1f2e 100%);
-            padding: 1.5rem;
-            border-radius: 15px;
-            border: 1px solid rgba(187, 134, 252, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .tip-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(187, 134, 252, 0.3);
-        }
-
-        .tip-card h4 {
-            color: var(--primary-color);
-            margin-bottom: 0.8rem;
-        }
-
-        .tip-card i {
-            margin-right: 0.5rem;
-        }
-
-        .troubleshooting .problem {
-            background: rgba(255, 100, 100, 0.05);
-            padding: 1.5rem;
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-            border-left: 4px solid #ff6b6b;
-        }
-
-        .troubleshooting .problem h4 {
-            color: #ff6b6b;
+        .faq-answer p {
             margin-bottom: 1rem;
         }
 
-        .troubleshooting .problem ul {
-            margin: 0;
+        .faq-answer ul, .faq-answer ol {
+            margin: 1rem 0;
             padding-left: 1.5rem;
         }
 
-        .troubleshooting .problem li {
+        .faq-answer li {
             margin-bottom: 0.5rem;
-            line-height: 1.6;
+        }
+
+        .faq-answer strong {
+            color: var(--primary-color);
         }
 
         .primary-btn {
