@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- SEO Meta Tags -->
+    <title>SVG zu G-Code Konverter | Stift-Plotter Tool für 3D-Drucker</title>
+    <meta name="description" content="Konvertiere SVG-Dateien in G-Code für Stift-Plotter. Perfekt für Vektorgrafiken, Logos und Zeichnungen. Optimiert für Ender 3 und andere 3D-Drucker." />
+    <meta name="keywords" content="SVG zu G-Code, Vektor zu G-Code, SVG Konverter, Plotter G-Code, 3D-Drucker Zeichnung, Ender 3 SVG" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://stift-plotter-gcode.de/svg-to-gcode.html" />
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://stift-plotter-gcode.de/svg-to-gcode.html" />
+    <meta property="og:title" content="SVG zu G-Code Konverter für Stift-Plotter" />
+    <meta property="og:description" content="Wandle SVG-Dateien in G-Code für deinen 3D-Drucker Stift-Plotter um. Einfach, schnell und kostenlos." />
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+    <link rel="manifest" href="manifest.json" />
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome for Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "SVG zu G-Code Konverter",
+      "applicationCategory": "DesignApplication",
+      "description": "Konvertiere SVG-Vektorgrafiken in G-Code für 3D-Drucker als Stift-Plotter",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0"
+      }
+    }
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Zurück</a>
+      <header>
+        <h1><i class="fas fa-pen-nib"></i> SVG zu G-Code Konverter</h1>
+        <p>Wandle deine Zeichnungen in Pfade für deinen 3D-Drucker um.</p>
+      </header>
+
+      <div class="main-content">
+        <div class="controls-panel">
+          <div class="upload-section" id="drop-zone">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <p>SVG hier ablegen oder klicken</p>
+            <input type="file" id="file-input" accept=".svg" hidden />
+          </div>
+
+          <div class="settings-group">
+            <h2>Einstellungen</h2>
+
+            <div class="setting-item">
+              <label>
+                Stift unten (Z)
+                <span
+                  class="tooltip-icon"
+                  data-tooltip="Die Höhe der Z-Achse beim Schreiben. Sollte das Papier leicht berühren."
+                  ><i class="fas fa-info-circle"></i
+                ></span>
+              </label>
+              <div class="input-wrapper">
+                <input type="number" id="z-down" value="0.5" step="0.1" />
+                <span>mm</span>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <label>
+                Stift oben (Z)
+                <span
+                  class="tooltip-icon"
+                  data-tooltip="Die Höhe der Z-Achse beim Bewegen ohne zu schreiben. Muss hoch genug sein, um das Papier nicht zu berühren."
+                  ><i class="fas fa-info-circle"></i
+                ></span>
+              </label>
+              <div class="input-wrapper">
+                <input type="number" id="z-up" value="5.0" step="0.1" />
+                <span>mm</span>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <label>
+                Schreib-Geschwindigkeit
+                <span
+                  class="tooltip-icon"
+                  data-tooltip="Wie schnell sich der Drucker beim Schreiben bewegt (Feedrate). Langsamer ist oft präziser."
+                  ><i class="fas fa-info-circle"></i
+                ></span>
+              </label>
+              <div class="input-wrapper">
+                <input type="number" id="feed-rate" value="1500" step="100" />
+                <span>mm/min</span>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <label>
+                Reise-Geschwindigkeit
+                <span
+                  class="tooltip-icon"
+                  data-tooltip="Wie schnell sich der Drucker bewegt, wenn er NICHT schreibt. Kann schneller sein um Zeit zu sparen."
+                  ><i class="fas fa-info-circle"></i
+                ></span>
+              </label>
+              <div class="input-wrapper">
+                <input type="number" id="travel-rate" value="3000" step="100" />
+                <span>mm/min</span>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <label>
+                Skalierung
+                <span
+                  class="tooltip-icon"
+                  data-tooltip="Vergrößert oder verkleinert die Zeichnung. 100% = Originalgröße."
+                  ><i class="fas fa-info-circle"></i
+                ></span>
+              </label>
+              <div class="input-wrapper">
+                <input type="number" id="scale" value="100" step="1" />
+                <span>%</span>
+              </div>
+            </div>
+
+            <details class="advanced-settings">
+              <summary>
+                Erweiterte G-Code Einstellungen
+                <span
+                  class="tooltip-icon"
+                  data-tooltip="Spezielle Befehle für den Start und das Ende des Drucks."
+                  ><i class="fas fa-info-circle"></i
+                ></span>
+              </summary>
+              <div class="setting-item full-width">
+                <label>Start G-Code</label>
+                <textarea id="start-gcode" rows="3">
+G28 ; Home all axes
+G90 ; Absolute positioning
+G21 ; Millimeter units</textarea
+                >
+              </div>
+              <div class="setting-item full-width">
+                <label>Ende G-Code</label>
+                <textarea id="end-gcode" rows="3">
+G0 Z10 ; Rase pen
+G28 X0 Y0 ; Home X Y
+M84 ; Disable motors</textarea
+                >
+              </div>
+            </details>
+          </div>
+
+          <div class="actions">
+            <button id="generate-btn" class="primary-btn" disabled>
+              <i class="fas fa-cogs"></i> G-Code Generieren
+            </button>
+            <button id="download-btn" class="secondary-btn" disabled>
+              <i class="fas fa-download"></i> Herunterladen
+            </button>
+          </div>
+        </div>
+
+        <div class="preview-panel">
+          <div class="canvas-container">
+            <div id="placeholder-text">Vorschau Bereich</div>
+            <canvas id="preview-canvas"></canvas>
+          </div>
+          <div class="stats" id="stats-display" style="display: none">
+            <p><span class="dot write"></span> Schreiben</p>
+            <p><span class="dot travel"></span> Reisen (Stift oben)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tooltip Element -->
+    <div id="tooltip" class="tooltip"></div>
+
+    <script src="svg-script.js"></script>
+  </body>
+</html>

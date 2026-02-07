@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>Text zu G-Code Konverter | Beschriftungen für Stift-Plotter erstellen</title>
+    <meta name="description" content="Schreibe Text direkt ein und wandle ihn in G-Code für Stift-Plotter um. Verschiedene Schriftarten und automatischer Zeilenumbruch. Ideal für Beschriftungen.">
+    <meta name="keywords" content="Text zu G-Code, Text Plotter, G-Code Schrift, Beschriftung 3D-Drucker, Vektor Schrift, Plotter Text">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://stift-plotter-gcode.de/text-to-gcode.html">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://stift-plotter-gcode.de/text-to-gcode.html">
+    <meta property="og:title" content="Text zu G-Code Konverter für Stift-Plotter">
+    <meta property="og:description" content="Erstelle Beschriftungen und handgeschriebene Texte mit deinem 3D-Drucker als Plotter.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Text zu G-Code Konverter",
+      "applicationCategory": "DesignApplication",
+      "description": "Konvertiere Text in G-Code für Stift-Plotter mit verschiedenen Vektor-Schriftarten",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0"
+      }
+    }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Zurück</a>
+        <header>
+            <h1><i class="fas fa-font"></i> Text zu G-Code Konverter</h1>
+            <p>Schreibe Text direkt ein und wandle ihn in Plottercode um.</p>
+        </header>
+
+        <div class="main-content">
+            <div class="controls-panel">
+                <div class="settings-group">
+                    <h2>Text Eingabe</h2>
+                    
+                    <div class="setting-item full-width">
+                        <label>Dein Text</label>
+                        <textarea id="text-input" rows="4" placeholder="Gib hier deinen Text ein...">Hallo Welt!</textarea>
+                    </div>
+
+                    <div class="setting-item">
+                        <label>
+                            Schriftart
+                            <span class="tooltip-icon" data-tooltip="Verschiedene Vektor-Schriften für den Plotter."><i class="fas fa-info-circle"></i></span>
+                        </label>
+                        <select id="font-select" style="width: 100%; padding: 8px; background: var(--input-bg); color: var(--text-primary); border: 1px solid var(--input-border); border-radius: 6px;">
+                            <option value="simplex">Simplex (einfach)</option>
+                            <option value="complex">Complex (dekorativ)</option>
+                            <option value="script">Script (Schreibschrift)</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <label>
+                            Schriftgröße
+                            <span class="tooltip-icon" data-tooltip="Höhe der Buchstaben in Millimetern."><i class="fas fa-info-circle"></i></span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="number" id="font-size" value="10" step="1" min="5" max="100">
+                            <span>mm</span>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <label>
+                            Zeilenabstand
+                            <span class="tooltip-icon" data-tooltip="Abstand zwischen den Zeilen (Multiplier der Schriftgröße)."><i class="fas fa-info-circle"></i></span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="number" id="line-spacing" value="1.5" step="0.1" min="1" max="3">
+                            <span>×</span>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <label>
+                            Max. Zeilenbreite
+                            <span class="tooltip-icon" data-tooltip="Maximale Breite einer Zeile. Text wird automatisch umgebrochen."><i class="fas fa-info-circle"></i></span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="number" id="line-width" value="100" step="5" min="50" max="300">
+                            <span>mm</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h2>G-Code Einstellungen</h2>
+                    
+                    <div class="setting-item">
+                        <label>
+                            Stift unten (Z)
+                            <span class="tooltip-icon" data-tooltip="Die Höhe der Z-Achse beim Schreiben."><i class="fas fa-info-circle"></i></span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="number" id="z-down" value="0.5" step="0.1">
+                            <span>mm</span>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <label>
+                            Stift oben (Z)
+                            <span class="tooltip-icon" data-tooltip="Die Höhe der Z-Achse beim Bewegen ohne zu schreiben."><i class="fas fa-info-circle"></i></span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="number" id="z-up" value="5.0" step="0.1">
+                            <span>mm</span>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <label>
+                            Schreib-Geschwindigkeit
+                            <span class="tooltip-icon" data-tooltip="Wie schnell sich der Drucker beim Schreiben bewegt."><i class="fas fa-info-circle"></i></span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="number" id="feed-rate" value="1500" step="100">
+                            <span>mm/min</span>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <label>
+                            Reise-Geschwindigkeit
+                            <span class="tooltip-icon" data-tooltip="Wie schnell sich der Drucker bewegt, wenn er NICHT schreibt."><i class="fas fa-info-circle"></i></span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="number" id="travel-rate" value="3000" step="100">
+                            <span>mm/min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button id="generate-btn" class="primary-btn">
+                        <i class="fas fa-cogs"></i> G-Code Generieren
+                    </button>
+                    <button id="download-btn" class="secondary-btn" disabled>
+                        <i class="fas fa-download"></i> Herunterladen
+                    </button>
+                </div>
+            </div>
+
+            <div class="preview-panel">
+                <div class="canvas-container">
+                    <div id="placeholder-text">Vorschau Bereich</div>
+                    <canvas id="preview-canvas"></canvas>
+                </div>
+                <div class="stats" id="stats-display" style="display: none;">
+                    <p><span class="dot write"></span> Schreiben</p>
+                    <p><span class="dot travel"></span> Reisen (Stift oben)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="tooltip" class="tooltip"></div>
+
+    <script src="text-script.js"></script>
+</body>
+</html>

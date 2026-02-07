@@ -1,0 +1,501 @@
+:root {
+  --bg-color: #0a0a0f;
+  --bg-gradient: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+  --surface-color: #1e1e2e;
+  --surface-gradient: linear-gradient(145deg, #2a2a3e 0%, #1f1f2e 100%);
+  --primary-color: #bb86fc;
+  --primary-gradient: linear-gradient(135deg, #bb86fc 0%, #a370f7 100%);
+  --secondary-color: #03dac6;
+  --accent-gradient: linear-gradient(135deg, #bb86fc 0%, #03dac6 100%);
+  --text-primary: #ffffff;
+  --text-secondary: #b0b0b0;
+  --error-color: #cf6679;
+  --border-radius: 16px;
+  --input-bg: #2c2c3e;
+  --input-border: #3e3e52;
+  --glow-primary: rgba(187, 134, 252, 0.4);
+  --glow-secondary: rgba(3, 218, 198, 0.3);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background: var(--bg-gradient);
+  color: var(--text-primary);
+  line-height: 1.6;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Back Button */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  background: rgba(187, 134, 252, 0.1);
+  border: 1px solid rgba(187, 134, 252, 0.3);
+  border-radius: 50px;
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.back-btn:hover {
+  background: rgba(187, 134, 252, 0.2);
+  border-color: var(--primary-color);
+  transform: translateX(-5px);
+  box-shadow: 0 0 20px var(--glow-primary);
+}
+
+/* Header */
+header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+header h1 {
+  font-weight: 700;
+  font-size: 2.5rem;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.5px;
+}
+
+header p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.main-content {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 25px;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Controls Panel */
+.controls-panel {
+  background: var(--surface-gradient);
+  padding: 25px;
+  border-radius: var(--border-radius);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  max-height: 100%;
+  box-shadow: 
+    0 10px 40px rgba(0, 0, 0, 0.5),
+    0 0 1px rgba(187, 134, 252, 0.2);
+  border: 1px solid rgba(187, 134, 252, 0.1);
+}
+
+/* Upload Section */
+.upload-section {
+  border: 2px dashed rgba(187, 134, 252, 0.3);
+  border-radius: var(--border-radius);
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: rgba(187, 134, 252, 0.03);
+  position: relative;
+  overflow: hidden;
+}
+
+.upload-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at center, rgba(187, 134, 252, 0.1) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.upload-section:hover::before,
+.upload-section.dragover::before {
+  opacity: 1;
+}
+
+.upload-section:hover,
+.upload-section.dragover {
+  border-color: var(--primary-color);
+  background: rgba(187, 134, 252, 0.1);
+  box-shadow: 0 0 30px var(--glow-primary);
+}
+
+.upload-section i {
+  font-size: 2.5rem;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 10px;
+  display: block;
+}
+
+/* Settings */
+.settings-group h2 {
+  font-size: 1.2rem;
+  margin-bottom: 18px;
+  background: var(--accent-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  border-bottom: 1px solid rgba(187, 134, 252, 0.2);
+  padding-bottom: 10px;
+  font-weight: 600;
+}
+
+.setting-item {
+  margin-bottom: 18px;
+}
+
+.setting-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.setting-item label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 500;
+}
+
+.tooltip-icon {
+  color: var(--secondary-color);
+  cursor: help;
+  margin-left: 8px;
+  font-size: 0.9em;
+  transition: all 0.2s;
+}
+
+.tooltip-icon:hover {
+  color: var(--primary-color);
+  transform: scale(1.1);
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.input-wrapper:focus-within {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 15px var(--glow-primary);
+}
+
+.input-wrapper input {
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  padding: 10px 14px;
+  width: 100%;
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.input-wrapper input:focus {
+  outline: none;
+}
+
+.input-wrapper span {
+  padding: 0 14px;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  background: rgba(187, 134, 252, 0.1);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+}
+
+select {
+  width: 100%;
+  padding: 10px 14px;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 15px var(--glow-primary);
+}
+
+textarea {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 8px;
+  color: var(--text-primary);
+  padding: 12px;
+  font-family: "Consolas", monospace;
+  font-size: 0.9rem;
+  resize: vertical;
+  transition: all 0.3s ease;
+  min-height: 80px;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 15px var(--glow-primary);
+}
+
+/* Advanced Settings */
+.advanced-settings summary {
+  cursor: pointer;
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-bottom: 15px;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.advanced-settings summary:hover {
+  color: var(--secondary-color);
+}
+
+/* Buttons */
+.actions {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+button {
+  padding: 14px;
+  border: none;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+button:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.primary-btn {
+  background: var(--primary-gradient);
+  color: #000;
+  box-shadow: 0 6px 20px var(--glow-primary);
+  font-weight: 700;
+}
+
+.primary-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #a370f7 0%, #bb86fc 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px var(--glow-primary);
+}
+
+.secondary-btn {
+  background: transparent;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color);
+}
+
+.secondary-btn:hover:not(:disabled) {
+  background: rgba(187, 134, 252, 0.2);
+  border-color: var(--secondary-color);
+  color: var(--secondary-color);
+  box-shadow: 0 0 20px var(--glow-primary);
+}
+
+/* Preview Panel */
+.preview-panel {
+  background: var(--surface-gradient);
+  border-radius: var(--border-radius);
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 
+    0 10px 40px rgba(0, 0, 0, 0.5),
+    0 0 1px rgba(187, 134, 252, 0.2);
+  border: 1px solid rgba(187, 134, 252, 0.1);
+}
+
+.canvas-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  border: 2px solid rgba(187, 134, 252, 0.2);
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8);
+}
+
+#placeholder-text {
+  position: absolute;
+  color: var(--text-secondary);
+  pointer-events: none;
+  font-size: 1.2rem;
+  opacity: 0.5;
+}
+
+canvas {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.stats {
+  display: flex;
+  gap: 25px;
+  margin-top: 20px;
+  justify-content: center;
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.stats p {
+  display: flex;
+  align-items: center;
+}
+
+.dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+  box-shadow: 0 0 10px currentColor;
+}
+
+.dot.write {
+  background-color: var(--secondary-color);
+  color: var(--secondary-color);
+}
+
+.dot.travel {
+  background-color: var(--error-color);
+  color: var(--error-color);
+}
+
+/* Custom Tooltip */
+.tooltip {
+  position: absolute;
+  background: linear-gradient(135deg, #2a2a3e 0%, #1f1f2e 100%);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  max-width: 280px;
+  border: 1px solid rgba(187, 134, 252, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+/* Scrollbar Styling */
+.controls-panel::-webkit-scrollbar {
+  width: 8px;
+}
+
+.controls-panel::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+.controls-panel::-webkit-scrollbar-thumb {
+  background: var(--primary-gradient);
+  border-radius: 10px;
+}
+
+.controls-panel::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #a370f7 0%, #bb86fc 100%);
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    grid-template-columns: 1fr;
+  }
+
+  .container {
+    padding: 10px;
+  }
+  
+  header h1 {
+    font-size: 2rem;
+  }
+}

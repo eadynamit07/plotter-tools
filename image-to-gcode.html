@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- SEO Meta Tags -->
+    <title>Bild zu G-Code Konverter | Fotos in Plotter-Kunst umwandeln</title>
+    <meta name="description" content="Verwandle Bilder und Fotos in G-Code für Stift-Plotter. Drei Stile: Konturen, Schraffur, Stippling. Perfekt für 3D-Drucker mit Stift-Aufsatz.">
+    <meta name="keywords" content="Bild zu G-Code, Foto zu G-Code, Image to GCode, Edge Detection, Hatching, Stippling, Plotter Art, 3D-Drucker Kunst">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://stift-plotter-gcode.de/image-to-gcode.html">
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://stift-plotter-gcode.de/image-to-gcode.html">
+    <meta property="og:title" content="Bild zu G-Code Konverter für Stift-Plotter">
+    <meta property="og:description" content="Erstelle einzigartige Plotter-Kunst aus deinen Fotos mit Edge Detection, Schraffur oder Stippling.">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Bild zu G-Code Konverter",
+      "applicationCategory": "DesignApplication",
+      "description": "Konvertiere Bilder und Fotos in G-Code für Stift-Plotter mit verschiedenen künstlerischen Stilen",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0"
+      }
+    }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Zurück</a>
+        <header>
+            <h1><i class="fas fa-image"></i> Bild zu G-Code Konverter</h1>
+            <p>Verwandle Fotos und Bilder in plotterbare Kunst.</p>
+        </header>
+
+        <div class="main-content">
+            <div class="controls-panel">
+                <div class="settings-group">
+                    <h2>Bild Upload</h2>
+                    
+                    <div class="upload-section" id="drop-zone">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Bild hier ablegen oder klicken</p>
+                        <input type="file" id="file-input" accept="image/*" hidden>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h2>Konvertierungs-Modus</h2>
+                    
+                    <div class="setting-item">
+                        <label>
+                            Zeichenstil
+                            <span class="tooltip-icon" data-tooltip="Wähle wie das Bild geplottet werden soll."><i class="fas fa-info-circle"></i></span>
+                        </label>
+                        <select id="mode-select">
+                            <option value="edges">Konturen (Edge Detection)</option>
+                            <option value="hatching">Schraffur (Hatching)</option>
+                            <option value="stippling">Stippling (Punktierung)</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <label>
+                            Bildgröße
+                            <span class="tooltip-icon" data-tooltip="Maximale Breite des gezeichneten Bildes in Millimetern."><i class="fas fa-info-circle"></i></span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="number" id="image-width" value="100" step="10" min="20" max="200">
+                            <span>mm</span>
+                        </div>
+                    </div>
+
+                    <!-- Edge Detection Settings -->
+                    <div id="edges-settings" class="mode-settings">
+                        <div class="setting-item">
+                            <label>
+                                Linien-Schwellwert
+                                <span class="tooltip-icon" data-tooltip="Wie stark eine Kante sein muss, um erkannt zu werden. Höher = weniger Details."><i class="fas fa-info-circle"></i></span>
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="range" id="edge-threshold" value="50" min="10" max="150" step="5">
+                                <span id="edge-threshold-value">50</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hatching Settings -->
+                    <div id="hatching-settings" class="mode-settings" style="display: none;">
+                        <div class="setting-item">
+                            <label>
+                                Linienabstand
+                                <span class="tooltip-icon" data-tooltip="Abstand zwischen den Schraffur-Linien."><i class="fas fa-info-circle"></i></span>
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="number" id="hatch-spacing" value="2" step="0.5" min="1" max="5">
+                                <span>mm</span>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <label>
+                                Winkel
+                                <span class="tooltip-icon" data-tooltip="Winkel der Schraffur-Linien."><i class="fas fa-info-circle"></i></span>
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="number" id="hatch-angle" value="45" step="15" min="0" max="180">
+                                <span>°</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stippling Settings -->
+                    <div id="stippling-settings" class="mode-settings" style="display: none;">
+                        <div class="setting-item">
+                            <label>
+                                Punkt-Dichte
+                                <span class="tooltip-icon" data-tooltip="Wie viele Punkte pro Fläche gezeichnet werden."><i class="fas fa-info-circle"></i></span>
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="range" id="stipple-density" value="5" min="1" max="10" step="1">
+                                <span id="stipple-density-value">5</span>
+                            </div>
+                        </div>
+                        <div class="setting-item">
+                            <label>
+                                Punkt-Größe
+                                <span class="tooltip-icon" data-tooltip="Größe der einzelnen Punkte."><i class="fas fa-info-circle"></i></span>
+                            </label>
+                            <div class="input-wrapper">
+                                <input type="number" id="stipple-size" value="0.5" step="0.1" min="0.2" max="2">
+                                <span>mm</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <h2>G-Code Einstellungen</h2>
+                    
+                    <div class="setting-item">
+                        <label>
+                            Stift unten (Z)
+                            <span class="tooltip-icon" data-tooltip="Die Höhe der Z-Achse beim Schreiben."><i class="fas fa-info-circle"></i></span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="number" id="z-down" value="0.5" step="0.1">
+                            <span>mm</span>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <label>
+                            Stift oben (Z)
+                            <span class="tooltip-icon" data-tooltip="Die Höhe der Z-Achse beim Bewegen ohne zu schreiben."><i class="fas fa-info-circle"></i></span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="number" id="z-up" value="5.0" step="0.1">
+                            <span>mm</span>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <label>
+                            Schreib-Geschwindigkeit
+                            <span class="tooltip-icon" data-tooltip="Wie schnell sich der Drucker beim Schreiben bewegt."><i class="fas fa-info-circle"></i></span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="number" id="feed-rate" value="1500" step="100">
+                            <span>mm/min</span>
+                        </div>
+                    </div>
+
+                    <div class="setting-item">
+                        <label>
+                            Reise-Geschwindigkeit
+                            <span class="tooltip-icon" data-tooltip="Wie schnell sich der Drucker bewegt, wenn er NICHT schreibt."><i class="fas fa-info-circle"></i></span>
+                        </label>
+                        <div class="input-wrapper">
+                            <input type="number" id="travel-rate" value="3000" step="100">
+                            <span>mm/min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button id="generate-btn" class="primary-btn" disabled>
+                        <i class="fas fa-cogs"></i> G-Code Generieren
+                    </button>
+                    <button id="download-btn" class="secondary-btn" disabled>
+                        <i class="fas fa-download"></i> Herunterladen
+                    </button>
+                </div>
+            </div>
+
+            <div class="preview-panel">
+                <div class="canvas-container">
+                    <div id="placeholder-text">Vorschau Bereich</div>
+                    <canvas id="preview-canvas"></canvas>
+                </div>
+                <div class="stats" id="stats-display" style="display: none;">
+                    <p><span class="dot write"></span> Schreiben</p>
+                    <p><span class="dot travel"></span> Reisen (Stift oben)</p>
+                    <p id="path-count"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="tooltip" class="tooltip"></div>
+
+    <script src="image-script.js"></script>
+</body>
+</html>

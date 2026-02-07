@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://stift-plotter-gcode.de/sitemap.xml
+
+# Disallow nothing - all pages are public
