@@ -2,6 +2,6 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://stift-plotter-gcode.de/sitemap.xml
+Sitemap: https://plotter-tools.pages.dev/sitemap.xml
 
 # Disallow nothing - all pages are public
