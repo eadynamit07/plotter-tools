@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Background Circle -->
+  <circle cx="50" cy="50" r="48" fill="#1e1e1e" stroke="#BB86FC" stroke-width="4"/>
+  <!-- Pen Tip Stylized -->
+  <path d="M50 20 L75 55 L50 90 L25 55 Z" fill="#BB86FC" />
+  <!-- Split in the nib -->
+  <path d="M50 55 L50 85" stroke="#1e1e1e" stroke-width="3" stroke-linecap="round"/>
+  <!-- Decorative detail -->
+  <circle cx="50" cy="45" r="3" fill="#1e1e1e"/>
+</svg>
