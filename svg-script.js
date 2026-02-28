@@ -15,6 +15,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const inputFeedRate = document.getElementById("feed-rate");
   const inputTravelRate = document.getElementById("travel-rate");
   const inputScale = document.getElementById("scale");
+  const inputOffsetX = document.getElementById("x-offset");
+  const inputOffsetY = document.getElementById("y-offset");
   const startGcodeArea = document.getElementById("start-gcode");
   const endGcodeArea = document.getElementById("end-gcode");
 
@@ -392,6 +394,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const zUp = inputZUp.value;
     const feedRate = inputFeedRate.value;
     const travelRate = inputTravelRate.value;
+    const offsetX = parseFloat(inputOffsetX.value) || 0;
+    const offsetY = parseFloat(inputOffsetY.value) || 0;
     const startCode = startGcodeArea.value;
     const endCode = endGcodeArea.value;
 
@@ -409,7 +413,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // 1. Move to start point (Pen Up)
       const start = poly[0];
-      code.push(`G0 X${start.x.toFixed(3)} Y${start.y.toFixed(3)}`);
+      code.push(`G0 X${(start.x + offsetX).toFixed(3)} Y${(start.y + offsetY).toFixed(3)}`);
 
       // 2. Lower Pen
       code.push(`G1 Z${zDown} F300`); // Lowering z slowly
@@ -418,7 +422,7 @@ document.addEventListener("DOMContentLoaded", () => {
       code.push(`G1 F${feedRate} ; Set print speed`);
       for (let i = 1; i < poly.length; i++) {
         const p = poly[i];
-        code.push(`G1 X${p.x.toFixed(3)} Y${p.y.toFixed(3)}`);
+        code.push(`G1 X${(p.x + offsetX).toFixed(3)} Y${(p.y + offsetY).toFixed(3)}`);
       }
 
       // 4. Raise Pen
