@@ -8,6 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const downloadBtn = document.getElementById("download-btn");
   const statsDisplay = document.getElementById("stats-display");
   const tooltip = document.getElementById("tooltip");
+  const loadingOverlay = document.getElementById("loading-overlay");
+  const rotationInput = document.getElementById("rotation");
+  const showTravelCheckbox = document.getElementById("show-travel");
 
   // Inputs
   const inputZDown = document.getElementById("z-down");
@@ -60,8 +63,63 @@ document.addEventListener("DOMContentLoaded", () => {
   downloadBtn.addEventListener("click", downloadGCode);
 
   // Live Preview Update on Settings Change
-  [inputScale].forEach((input) => {
+  [inputScale, rotationInput].forEach((input) => {
     input.addEventListener("input", updatePreview);
+  });
+
+  showTravelCheckbox.addEventListener("change", drawPreview);
+
+  [inputOffsetX, inputOffsetY].forEach(input => {
+    input.addEventListener("input", drawPreview);
+  });
+
+  // Drag and Drop Logic
+  let isDragging = false;
+  let dragStartX, dragStartY;
+  let offsetXStart, offsetYStart;
+
+  previewCanvas.addEventListener("mousedown", (e) => {
+    if (svgPolylines.length === 0) return;
+    isDragging = true;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    offsetXStart = parseFloat(inputOffsetX.value) || 0;
+    offsetYStart = parseFloat(inputOffsetY.value) || 0;
+  });
+
+  window.addEventListener("mousemove", (e) => {
+    if (!isDragging) return;
+    
+    const dx = e.clientX - dragStartX;
+    const dy = e.clientY - dragStartY;
+    
+    const BED_W = 235;
+    const BED_H = 235;
+    const margin = 20;
+
+    const canvasObjWidth = previewCanvas.offsetWidth;
+    const canvasObjHeight = previewCanvas.offsetHeight;
+
+    const usableW = canvasObjWidth - 2 * margin;
+    const usableH = canvasObjHeight - 2 * margin;
+    
+    const scaleX = usableW / BED_W;
+    const scaleY = usableH / BED_H;
+    
+    const dxMm = dx / scaleX;
+    const dyMm = dy / scaleY;
+    
+    const newOffsetX = offsetXStart + dxMm;
+    const newOffsetY = offsetYStart - dyMm;
+    
+    inputOffsetX.value = newOffsetX.toFixed(1);
+    inputOffsetY.value = newOffsetY.toFixed(1);
+    
+    drawPreview();
+  });
+
+  window.addEventListener("mouseup", () => {
+    isDragging = false;
   });
 
   // Tooltips
@@ -96,12 +154,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const reader = new FileReader();
+    loadingOverlay.style.display = "flex";
     reader.onload = (e) => {
       try {
         parseSVG(e.target.result);
+        loadingOverlay.style.display = "none";
         // Reset input so same file can be selected again
         fileInput.value = "";
       } catch (err) {
+        loadingOverlay.style.display = "none";
         alert("Fehler beim Lesen der SVG: " + err.message);
         console.error(err);
       }
@@ -273,117 +334,142 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updatePreview() {
     if (svgPolylines.length === 0) return;
+    
+    loadingOverlay.style.display = "flex";
 
-    const scalePercent = parseFloat(inputScale.value) || 100;
-    const scaleFactor = scalePercent / 100;
+    setTimeout(() => {
+        const scalePercent = parseFloat(inputScale.value) || 100;
+        const scaleFactor = scalePercent / 100;
 
-    // Apply Scaling to create display polylines
-    // We also want to center it or keep it at origin?
-    // Usually, 3D printers expect (0,0) at bottom-leading corner.
-    // SVGs often have (0,0) at top-left.
-    // We will flip Y axis if needed? No, standard 2D plotters usually work in 2D plane X,Y.
-    // BUT, if we want to visualize it on screen (Y down) vs printer (Y up usually?).
-    // Actually Ender 3 treats Y+ as back, X+ as right. (0,0) is front-left.
-    // Screen (0,0) is top-left.
-    // Let's keep screen coordinates for preview for simplicity, assuming user drawing is "upright".
+        scaledPolylines = svgPolylines.map((poly) => {
+          return poly.map((p) => ({
+            x: (p.x - bounds.minX) * scaleFactor, // Shift to 0,0 locally then scale
+            y: (p.y - bounds.minY) * scaleFactor,
+          }));
+        });
 
-    // Prepare scaled paths for G-Code generation AND preview
-    scaledPolylines = svgPolylines.map((poly) => {
-      return poly.map((p) => ({
-        x: (p.x - bounds.minX) * scaleFactor, // Shift to 0,0 locally then scale
-        y: (p.y - bounds.minY) * scaleFactor,
-      }));
-    });
+        // --- APPLY ROTATION ---
+        const rotationDeg = parseFloat(rotationInput.value) || 0;
+        if (rotationDeg !== 0) {
+            const angle = (rotationDeg * Math.PI) / 180;
+            const cos = Math.cos(angle);
+            const sin = Math.sin(angle);
+            
+            // Scaled bounds for center calculation
+            const sWidth = (bounds.maxX - bounds.minX) * scaleFactor;
+            const sHeight = (bounds.maxY - bounds.minY) * scaleFactor;
+            const cx = sWidth / 2;
+            const cy = sHeight / 2;
 
-    drawPreview();
+            scaledPolylines = scaledPolylines.map(poly => {
+                return poly.map(p => {
+                    const dx = p.x - cx;
+                    const dy = p.y - cy;
+                    return {
+                        x: cx + dx * cos - dy * sin,
+                        y: cy + dx * sin + dy * cos
+                    };
+                });
+            });
+        }
+
+        drawPreview();
+        loadingOverlay.style.display = "none";
+    }, 10);
   }
 
   function drawPreview() {
     if (!previewCanvas) return;
 
-    // Resize canvas to fit container but keep aspect ratio of bounding box
     const container = previewCanvas.parentElement;
+    
+    // Square Canvas for 235x235mm bed
+    const size = Math.min(container.clientWidth, 600);
+    previewCanvas.width = size;
+    previewCanvas.height = size;
+
+    ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+    ctx.fillStyle = "#111";
+    ctx.fillRect(0, 0, previewCanvas.width, previewCanvas.height);
+
+    const BED_W = 235;
+    const BED_H = 235;
     const margin = 20;
-
-    // Calculate aspect ratios
-    const width = bounds.maxX - bounds.minX;
-    const height = bounds.maxY - bounds.minY;
-    const aspect = width / height || 1;
-
-    // Set canvas resolution
-    previewCanvas.width = container.clientWidth;
-    previewCanvas.height = container.clientWidth / aspect;
-    if (previewCanvas.height > 500) previewCanvas.height = 500; // Cap height
-
-    // Fit scaledPolylines into canvas view
-    // Create a transform to fit the [0, maxW] x [0, maxH] into canvas with padding
-    const ctxW = previewCanvas.width;
-    const ctxH = previewCanvas.height;
-
-    // Find max dimension in scaled data
-    let maxPolyX = -Infinity,
-      maxPolyY = -Infinity;
-    scaledPolylines.forEach((poly) => {
-      poly.forEach((p) => {
-        if (p.x > maxPolyX) maxPolyX = p.x;
-        if (p.y > maxPolyY) maxPolyY = p.y;
-      });
-    });
-
-    const scaleX = (ctxW - margin * 2) / (maxPolyX || 1);
-    const scaleY = (ctxH - margin * 2) / (maxPolyY || 1);
-    const viewScale = Math.min(scaleX, scaleY);
-
-    ctx.clearRect(0, 0, ctxW, ctxH);
-
-    // Draw Origin Indicator
-    ctx.fillStyle = "#333";
-    ctx.fillRect(0, 0, ctxW, ctxH);
-
-    // Grid
-    ctx.strokeStyle = "#444";
-    ctx.lineWidth = 0.5;
-    // ... simple grid ...
-
-    // Translate to center/margin
-    ctx.save();
-    ctx.translate(margin, margin);
-    ctx.scale(viewScale, viewScale);
-
-    // Draw Travel Moves (Red) - From End of prev path to Start of next
+    
+    const usableW = previewCanvas.width - 2 * margin;
+    const usableH = previewCanvas.height - 2 * margin;
+    
+    // Draw Bed Grid (every 50mm)
+    ctx.strokeStyle = "#333";
+    ctx.lineWidth = 1;
     ctx.beginPath();
-    ctx.strokeStyle = "#cf6679"; // Travel color
-    ctx.lineWidth = 1 / viewScale; // Keep line constant width
+    
+    const scaleX = usableW / BED_W;
+    const scaleY = usableH / BED_H;
 
-    // Assume starting at 0,0
-    let currentPos = { x: 0, y: 0 };
-
-    scaledPolylines.forEach((poly, index) => {
-      if (poly.length === 0) return;
-      // Travel to start
-      ctx.moveTo(currentPos.x, currentPos.y);
-      ctx.lineTo(poly[0].x, poly[0].y);
-      currentPos = poly[poly.length - 1];
-    });
+    for (let i = 0; i <= BED_W; i += 50) {
+      const x = margin + i * scaleX;
+      ctx.moveTo(x, margin);
+      ctx.lineTo(x, previewCanvas.height - margin);
+    }
+    for (let j = 0; j <= BED_H; j += 50) {
+      const y = previewCanvas.height - margin - j * scaleY;
+      ctx.moveTo(margin, y);
+      ctx.lineTo(previewCanvas.width - margin, y);
+    }
     ctx.stroke();
+    
+    ctx.fillStyle = "#666";
+    ctx.font = "14px Inter";
+    ctx.textAlign = "center";
+    ctx.fillText("Vorne (Ender 3)", previewCanvas.width / 2, previewCanvas.height - 5);
 
-    // Draw Print Moves (Blue/Cyan)
+    if (scaledPolylines.length === 0) return;
+
+    const offsetX = parseFloat(inputOffsetX.value) || 0;
+    const offsetY = parseFloat(inputOffsetY.value) || 0;
+
+    function bedToCanvas(pX, pY) {
+        return {
+            x: margin + (pX + offsetX) * scaleX,
+            y: previewCanvas.height - margin - (pY + offsetY) * scaleY
+        };
+    }
+
+    // Draw Travel Moves (Red)
+    if (showTravelCheckbox.checked) {
+        ctx.beginPath();
+        ctx.strokeStyle = "#cf6679";
+        ctx.lineWidth = 1;
+
+        let currentPos = { x: 0, y: 0 };
+        scaledPolylines.forEach((poly) => {
+          if (poly.length === 0) return;
+          const canvasFrom = bedToCanvas(currentPos.x - offsetX, currentPos.y - offsetY);
+          const canvasTo = bedToCanvas(poly[0].x, poly[0].y);
+          ctx.moveTo(canvasFrom.x, canvasFrom.y);
+          ctx.lineTo(canvasTo.x, canvasTo.y);
+          currentPos = { x: poly[poly.length - 1].x + offsetX, y: poly[poly.length - 1].y + offsetY };
+        });
+        ctx.stroke();
+    }
+
+    // Draw Print Moves (Cyan)
     ctx.beginPath();
-    ctx.strokeStyle = "#03dac6"; // Write color
-    ctx.lineWidth = 2 / viewScale;
+    ctx.strokeStyle = "#03dac6";
+    ctx.lineWidth = 2;
 
     scaledPolylines.forEach((poly) => {
       if (poly.length === 0) return;
-      ctx.moveTo(poly[0].x, poly[0].y);
+      const start = bedToCanvas(poly[0].x, poly[0].y);
+      ctx.moveTo(start.x, start.y);
       for (let i = 1; i < poly.length; i++) {
-        ctx.lineTo(poly[i].x, poly[i].y);
+        const pt = bedToCanvas(poly[i].x, poly[i].y);
+        ctx.lineTo(pt.x, pt.y);
       }
     });
     ctx.stroke();
 
-    ctx.restore();
-
-    // Update stats
     statsDisplay.style.display = "flex";
   }
 
