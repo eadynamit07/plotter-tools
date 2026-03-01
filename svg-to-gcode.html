@@ -173,6 +173,20 @@
                 <input type="number" id="scale" value="100" step="1" />
                 <span>%</span>
               </div>
+              <div class="setting-item">
+                <label>
+                  Rotation
+                  <span
+                    class="tooltip-icon"
+                    data-tooltip="Dreht die Zeichnung um den Mittelpunkt."
+                    ><i class="fas fa-info-circle"></i
+                  ></span>
+                </label>
+                <div class="input-wrapper">
+                  <input type="number" id="rotation" value="0" step="1" />
+                  <span>°</span>
+                </div>
+              </div>
             </div>
 
             <details class="advanced-settings">
@@ -215,12 +229,16 @@ M84 ; Disable motors</textarea
 
         <div class="preview-panel">
           <div class="canvas-container">
+            <div id="loading-overlay" class="loading-overlay" style="display: none;">
+                <div class="spinner"></div>
+                <p>Vorschau generieren...</p>
+            </div>
             <div id="placeholder-text">Vorschau Bereich</div>
             <canvas id="preview-canvas"></canvas>
           </div>
           <div class="stats" id="stats-display" style="display: none">
             <p><span class="dot write"></span> Schreiben</p>
-            <p><span class="dot travel"></span> Reisen (Stift oben)</p>
+            <p><label style="display: flex; align-items: center; gap: 8px; cursor: pointer; color: var(--text-secondary);"><input type="checkbox" id="show-travel" checked style="width: auto;"> <span class="dot travel"></span> Reisewege (Rot)</label></p>
           </div>
         </div>
       </div>
