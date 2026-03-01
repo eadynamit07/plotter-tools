@@ -11,6 +11,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const downloadBtn = document.getElementById("download-btn");
   const statsDisplay = document.getElementById("stats-display");
   const tooltip = document.getElementById("tooltip");
+  const loadingOverlay = document.getElementById("loading-overlay");
+  const rotationInput = document.getElementById("rotation");
+  const showTravelCheckbox = document.getElementById("show-travel");
 
   // G-Code inputs
   const inputZDown = document.getElementById("z-down");
@@ -181,9 +184,71 @@ document.addEventListener("DOMContentLoaded", () => {
   generateBtn.addEventListener("click", generateText);
   downloadBtn.addEventListener("click", downloadGCode);
 
-  [textInput, fontSelect, fontSizeInput, lineSpacingInput, lineWidthInput].forEach(input => {
+  [textInput, fontSelect, fontSizeInput, lineSpacingInput, lineWidthInput, rotationInput].forEach(input => {
     input.addEventListener("input", updatePreview);
     input.addEventListener("change", updatePreview);
+  });
+
+  showTravelCheckbox.addEventListener("change", drawPreview);
+
+  [inputOffsetX, inputOffsetY].forEach(input => {
+    input.addEventListener("input", drawPreview);
+  });
+
+  // Drag and Drop Logic
+  let isDragging = false;
+  let dragStartX, dragStartY;
+  let offsetXStart, offsetYStart;
+
+  previewCanvas.addEventListener("mousedown", (e) => {
+    if (textPolylines.length === 0) return;
+    isDragging = true;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    offsetXStart = parseFloat(inputOffsetX.value) || 0;
+    offsetYStart = parseFloat(inputOffsetY.value) || 0;
+  });
+
+  window.addEventListener("mousemove", (e) => {
+    if (!isDragging) return;
+    
+    // Pixel delta
+    const dx = e.clientX - dragStartX;
+    const dy = e.clientY - dragStartY;
+    
+    const container = previewCanvas.parentElement;
+    const BED_W = 235;
+    const BED_H = 235;
+    const margin = 20;
+
+    // Canvas size
+    const availableWidth = container.clientWidth;
+    // We cap height at 500 in drawPreview. But let's use the actual canvas offset size.
+    const canvasObjWidth = previewCanvas.offsetWidth;
+    const canvasObjHeight = previewCanvas.offsetHeight;
+
+    const usableW = canvasObjWidth - 2 * margin;
+    const usableH = canvasObjHeight - 2 * margin;
+    
+    const scaleX = usableW / BED_W;
+    const scaleY = usableH / BED_H;
+    
+    const dxMm = dx / scaleX;
+    const dyMm = dy / scaleY;
+    
+    // If dy > 0 (mouse moves down), visual goes down. Printer Y=0 is bottom.
+    // So moving down means Y offset decreases.
+    const newOffsetX = offsetXStart + dxMm;
+    const newOffsetY = offsetYStart - dyMm;
+    
+    inputOffsetX.value = newOffsetX.toFixed(1);
+    inputOffsetY.value = newOffsetY.toFixed(1);
+    
+    drawPreview();
+  });
+
+  window.addEventListener("mouseup", () => {
+    isDragging = false;
   });
 
   // Tooltips
@@ -213,13 +278,17 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updatePreview() {
-    const text = textInput.value;
-    const fontSize = parseFloat(fontSizeInput.value) || 10;
-    const lineSpacing = parseFloat(lineSpacingInput.value) || 1.5;
-    const maxLineWidth = parseFloat(lineWidthInput.value) || 100;
-    const selectedFont = fonts[fontSelect.value] || fontSimplex;
+    loadingOverlay.style.display = "flex";
 
-    textPolylines = [];
+    // Give UI a moment to show the spinner
+    setTimeout(() => {
+        const text = textInput.value;
+        const fontSize = parseFloat(fontSizeInput.value) || 10;
+        const lineSpacing = parseFloat(lineSpacingInput.value) || 1.5;
+        const maxLineWidth = parseFloat(lineWidthInput.value) || 100;
+        const selectedFont = fonts[fontSelect.value] || fontSimplex;
+
+        textPolylines = [];
     
     // Word wrapping logic
     const inputLines = text.split('\n');
@@ -282,7 +351,44 @@ document.addEventListener("DOMContentLoaded", () => {
       yOffset += fontSize * lineSpacing;
     });
 
+    // --- APPLY ROTATION ---
+    const rotationDeg = parseFloat(rotationInput.value) || 0;
+    if (rotationDeg !== 0) {
+      const angle = (rotationDeg * Math.PI) / 180;
+      
+      // 1. Calculate bounding box center
+      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+      textPolylines.forEach(poly => {
+        poly.forEach(p => {
+          if (p.x < minX) minX = p.x;
+          if (p.x > maxX) maxX = p.x;
+          if (p.y < minY) minY = p.y;
+          if (p.y > maxY) maxY = p.y;
+        });
+      });
+      
+      const cx = (minX + maxX) / 2;
+      const cy = (minY + maxY) / 2;
+      
+      const cos = Math.cos(angle);
+      const sin = Math.sin(angle);
+      
+      // 2. Rotate each point around (cx, cy)
+      textPolylines = textPolylines.map(poly => {
+        return poly.map(p => {
+          const dx = p.x - cx;
+          const dy = p.y - cy;
+          return {
+            x: cx + dx * cos - dy * sin,
+            y: cy + dx * sin + dy * cos
+          };
+        });
+      });
+    }
+
     drawPreview();
+    loadingOverlay.style.display = "none";
+  }, 10);
   }
 
   function calculateWordWidth(word, fontSize, font) {
@@ -298,67 +404,97 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!previewCanvas) return;
 
     const container = previewCanvas.parentElement;
-    previewCanvas.width = container.clientWidth;
-    previewCanvas.height = 500;
+    
+    // We want a square Canvas representation of the 235x235mm printer bed
+    const size = Math.min(container.clientWidth, 600); // capped at 600 for performance/look
+    previewCanvas.width = size;
+    previewCanvas.height = size;
 
     ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
-    ctx.fillStyle = "#333";
+    // Draw printer bed representation
+    ctx.fillStyle = "#111";
     ctx.fillRect(0, 0, previewCanvas.width, previewCanvas.height);
+
+    const BED_W = 235;
+    const BED_H = 235;
+    const margin = 20;
+    
+    const usableW = previewCanvas.width - 2 * margin;
+    const usableH = previewCanvas.height - 2 * margin;
+    
+    // Draw Bed Grid (every 50mm)
+    ctx.strokeStyle = "#333";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    
+    const scaleX = usableW / BED_W;
+    const scaleY = usableH / BED_H;
+
+    for (let i = 0; i <= BED_W; i += 50) {
+      const x = margin + i * scaleX;
+      ctx.moveTo(x, margin);
+      ctx.lineTo(x, previewCanvas.height - margin);
+    }
+    for (let j = 0; j <= BED_H; j += 50) {
+      const y = previewCanvas.height - margin - j * scaleY; // Bed Y=0 is bottom
+      ctx.moveTo(margin, y);
+      ctx.lineTo(previewCanvas.width - margin, y);
+    }
+    ctx.stroke();
+    
+    // Draw "Vorne" label
+    ctx.fillStyle = "#666";
+    ctx.font = "14px Inter";
+    ctx.textAlign = "center";
+    ctx.fillText("Vorne (Ender 3)", previewCanvas.width / 2, previewCanvas.height - 5);
 
     if (textPolylines.length === 0) return;
 
-    // Calculate bounds
-    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-    textPolylines.forEach(poly => {
-      poly.forEach(p => {
-        if (p.x < minX) minX = p.x;
-        if (p.y < minY) minY = p.y;
-        if (p.x > maxX) maxX = p.x;
-        if (p.y > maxY) maxY = p.y;
-      });
-    });
+    const offsetX = parseFloat(inputOffsetX.value) || 0;
+    const offsetY = parseFloat(inputOffsetY.value) || 0;
 
-    const margin = 20;
-    const width = maxX - minX;
-    const height = maxY - minY;
-    const scaleX = (previewCanvas.width - margin * 2) / (width || 1);
-    const scaleY = (previewCanvas.height - margin * 2) / (height || 1);
-    const scale = Math.min(scaleX, scaleY);
-
-    ctx.save();
-    ctx.translate(margin, margin);
-    ctx.scale(scale, scale);
-    ctx.translate(-minX, -minY);
+    function bedToCanvas(pX, pY) {
+        return {
+            x: margin + (pX + offsetX) * scaleX,
+            y: previewCanvas.height - margin - (pY + offsetY) * scaleY
+        };
+    }
 
     // Draw travel moves (red)
-    ctx.strokeStyle = "#cf6679";
-    ctx.lineWidth = 1 / scale;
-    ctx.beginPath();
-    let currentPos = { x: 0, y: 0 };
-    textPolylines.forEach(poly => {
-      if (poly.length > 0) {
-        ctx.moveTo(currentPos.x, currentPos.y);
-        ctx.lineTo(poly[0].x, poly[0].y);
-        currentPos = poly[poly.length - 1];
-      }
-    });
-    ctx.stroke();
+    if (showTravelCheckbox.checked) {
+        ctx.strokeStyle = "#cf6679";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        let currentPos = { x: 0, y: 0 };
+        textPolylines.forEach(poly => {
+          if (poly.length > 0) {
+            const canvasFrom = bedToCanvas(currentPos.x - offsetX, currentPos.y - offsetY);
+            const canvasTo = bedToCanvas(poly[0].x, poly[0].y);
+            
+            ctx.moveTo(canvasFrom.x, canvasFrom.y);
+            ctx.lineTo(canvasTo.x, canvasTo.y);
+            currentPos = { x: poly[poly.length - 1].x + offsetX, y: poly[poly.length - 1].y + offsetY };
+          }
+        });
+        ctx.stroke();
+    }
 
     // Draw write moves (cyan)
     ctx.strokeStyle = "#03dac6";
-    ctx.lineWidth = 2 / scale;
+    ctx.lineWidth = 2;
     ctx.beginPath();
     textPolylines.forEach(poly => {
       if (poly.length > 0) {
-        ctx.moveTo(poly[0].x, poly[0].y);
+        const start = bedToCanvas(poly[0].x, poly[0].y);
+        ctx.moveTo(start.x, start.y);
         for (let i = 1; i < poly.length; i++) {
-          ctx.lineTo(poly[i].x, poly[i].y);
+          const pt = bedToCanvas(poly[i].x, poly[i].y);
+          ctx.lineTo(pt.x, pt.y);
         }
       }
     });
     ctx.stroke();
 
-    ctx.restore();
     statsDisplay.style.display = "flex";
   }
 
