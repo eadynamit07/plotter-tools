@@ -11,6 +11,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const statsDisplay = document.getElementById("stats-display");
   const pathCount = document.getElementById("path-count");
   const tooltip = document.getElementById("tooltip");
+  const loadingOverlay = document.getElementById("loading-overlay");
+  const rotationInput = document.getElementById("rotation");
+  const showTravelCheckbox = document.getElementById("show-travel");
 
   // Mode-specific settings elements
   const edgeSettings = document.getElementById("edges-settings");
@@ -73,7 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Settings changes
-  [edgeThreshold, imageWidthInput, hatchSpacing, hatchAngle, stippleDensity, stippleSize].forEach(input => {
+  [edgeThreshold, imageWidthInput, hatchSpacing, hatchAngle, stippleDensity, stippleSize, rotationInput].forEach(input => {
     if (input) {
       input.addEventListener("input", () => {
         if (input === edgeThreshold) edgeThresholdValue.textContent = input.value;
@@ -83,8 +86,63 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  showTravelCheckbox.addEventListener("change", drawPreview);
+
   generateBtn.addEventListener("click", generateGCode);
   downloadBtn.addEventListener("click", downloadGCode);
+
+  [inputOffsetX, inputOffsetY].forEach(input => {
+    input.addEventListener("input", drawPreview);
+  });
+
+  // Drag and Drop Logic
+  let isDragging = false;
+  let dragStartX, dragStartY;
+  let offsetXStart, offsetYStart;
+
+  previewCanvas.addEventListener("mousedown", (e) => {
+    if (imagePolylines.length === 0) return;
+    isDragging = true;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    offsetXStart = parseFloat(inputOffsetX.value) || 0;
+    offsetYStart = parseFloat(inputOffsetY.value) || 0;
+  });
+
+  window.addEventListener("mousemove", (e) => {
+    if (!isDragging) return;
+    
+    const dx = e.clientX - dragStartX;
+    const dy = e.clientY - dragStartY;
+    
+    const BED_W = 235;
+    const BED_H = 235;
+    const margin = 20;
+
+    const canvasObjWidth = previewCanvas.offsetWidth;
+    const canvasObjHeight = previewCanvas.offsetHeight;
+
+    const usableW = canvasObjWidth - 2 * margin;
+    const usableH = canvasObjHeight - 2 * margin;
+    
+    const scaleX = usableW / BED_W;
+    const scaleY = usableH / BED_H;
+    
+    const dxMm = dx / scaleX;
+    const dyMm = dy / scaleY;
+    
+    const newOffsetX = offsetXStart + dxMm;
+    const newOffsetY = offsetYStart - dyMm;
+    
+    inputOffsetX.value = newOffsetX.toFixed(1);
+    inputOffsetY.value = newOffsetY.toFixed(1);
+    
+    drawPreview();
+  });
+
+  window.addEventListener("mouseup", () => {
+    isDragging = false;
+  });
 
   // Tooltips
   document.querySelectorAll(".tooltip-icon").forEach((icon) => {
@@ -142,33 +200,70 @@ document.addEventListener("DOMContentLoaded", () => {
   function processImage() {
     if (!uploadedImage) return;
 
-    const mode = modeSelect.value;
-    const targetWidth = parseFloat(imageWidthInput.value) || 100;
+    loadingOverlay.style.display = "flex";
 
-    // Create a temporary canvas to process the image
-    const tempCanvas = document.createElement("canvas");
-    const tempCtx = tempCanvas.getContext("2d");
+    setTimeout(() => {
+        const mode = modeSelect.value;
+        const targetWidth = parseFloat(imageWidthInput.value) || 100;
 
-    // Scale image to reasonable size for processing
-    const maxDim = 400;
-    const scale = Math.min(maxDim / uploadedImage.width, maxDim / uploadedImage.height);
-    tempCanvas.width = uploadedImage.width * scale;
-    tempCanvas.height = uploadedImage.height * scale;
-    tempCtx.drawImage(uploadedImage, 0, 0, tempCanvas.width, tempCanvas.height);
+        // Create a temporary canvas to process the image
+        const tempCanvas = document.createElement("canvas");
+        const tempCtx = tempCanvas.getContext("2d");
 
-    // Get image data
-    const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
+        // Scale image to reasonable size for processing
+        const maxDim = 400;
+        const scale = Math.min(maxDim / uploadedImage.width, maxDim / uploadedImage.height);
+        tempCanvas.width = uploadedImage.width * scale;
+        tempCanvas.height = uploadedImage.height * scale;
+        tempCtx.drawImage(uploadedImage, 0, 0, tempCanvas.width, tempCanvas.height);
 
-    // Process based on mode
-    if (mode === "edges") {
-      imagePolylines = processEdges(imageData, targetWidth);
-    } else if (mode === "hatching") {
-      imagePolylines = processHatching(imageData, targetWidth);
-    } else if (mode === "stippling") {
-      imagePolylines = processStippling(imageData, targetWidth);
-    }
+        // Get image data
+        const imageData = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height);
 
-    drawPreview();
+        // Process based on mode
+        if (mode === "edges") {
+          imagePolylines = processEdges(imageData, targetWidth);
+        } else if (mode === "hatching") {
+          imagePolylines = processHatching(imageData, targetWidth);
+        } else if (mode === "stippling") {
+          imagePolylines = processStippling(imageData, targetWidth);
+        }
+
+        // --- APPLY ROTATION ---
+        const rotationDeg = parseFloat(rotationInput.value) || 0;
+        if (rotationDeg !== 0) {
+            const angle = (rotationDeg * Math.PI) / 180;
+            const cos = Math.cos(angle);
+            const sin = Math.sin(angle);
+            
+            // Calculate center
+            let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+            imagePolylines.forEach(poly => {
+                poly.forEach(p => {
+                    if (p.x < minX) minX = p.x;
+                    if (p.x > maxX) maxX = p.x;
+                    if (p.y < minY) minY = p.y;
+                    if (p.y > maxY) maxY = p.y;
+                });
+            });
+            const cx = (minX + maxX) / 2;
+            const cy = (minY + maxY) / 2;
+
+            imagePolylines = imagePolylines.map(poly => {
+                return poly.map(p => {
+                    const dx = p.x - cx;
+                    const dy = p.y - cy;
+                    return {
+                        x: cx + dx * cos - dy * sin,
+                        y: cy + dx * sin + dy * cos
+                    };
+                });
+            });
+        }
+
+        drawPreview();
+        loadingOverlay.style.display = "none";
+    }, 10);
   }
 
   function processEdges(imageData, targetWidth) {
@@ -319,54 +414,94 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!previewCanvas) return;
 
     const container = previewCanvas.parentElement;
-    previewCanvas.width = container.clientWidth;
-    previewCanvas.height = 500;
+    
+    // Square Canvas for 235x235mm bed
+    const size = Math.min(container.clientWidth, 600);
+    previewCanvas.width = size;
+    previewCanvas.height = size;
 
     ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
-    ctx.fillStyle = "#333";
+    ctx.fillStyle = "#111";
     ctx.fillRect(0, 0, previewCanvas.width, previewCanvas.height);
+
+    const BED_W = 235;
+    const BED_H = 235;
+    const margin = 20;
+    
+    const usableW = previewCanvas.width - 2 * margin;
+    const usableH = previewCanvas.height - 2 * margin;
+    
+    // Draw Bed Grid (every 50mm)
+    ctx.strokeStyle = "#333";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    
+    const scaleX = usableW / BED_W;
+    const scaleY = usableH / BED_H;
+
+    for (let i = 0; i <= BED_W; i += 50) {
+      const x = margin + i * scaleX;
+      ctx.moveTo(x, margin);
+      ctx.lineTo(x, previewCanvas.height - margin);
+    }
+    for (let j = 0; j <= BED_H; j += 50) {
+      const y = previewCanvas.height - margin - j * scaleY;
+      ctx.moveTo(margin, y);
+      ctx.lineTo(previewCanvas.width - margin, y);
+    }
+    ctx.stroke();
+    
+    ctx.fillStyle = "#666";
+    ctx.font = "14px Inter";
+    ctx.textAlign = "center";
+    ctx.fillText("Vorne (Ender 3)", previewCanvas.width / 2, previewCanvas.height - 5);
 
     if (imagePolylines.length === 0) return;
 
-    // Calculate bounds
-    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-    imagePolylines.forEach(poly => {
-      poly.forEach(p => {
-        if (p.x < minX) minX = p.x;
-        if (p.y < minY) minY = p.y;
-        if (p.x > maxX) maxX = p.x;
-        if (p.y > maxY) maxY = p.y;
-      });
-    });
+    const offsetX = parseFloat(inputOffsetX.value) || 0;
+    const offsetY = parseFloat(inputOffsetY.value) || 0;
 
-    const margin = 20;
-    const width = maxX - minX;
-    const height = maxY - minY;
-    const scaleX = (previewCanvas.width - margin * 2) / (width || 1);
-    const scaleY = (previewCanvas.height - margin * 2) / (height || 1);
-    const scale = Math.min(scaleX, scaleY);
+    function bedToCanvas(pX, pY) {
+        return {
+            x: margin + (pX + offsetX) * scaleX,
+            y: previewCanvas.height - margin - (pY + offsetY) * scaleY
+        };
+    }
 
-    ctx.save();
-    ctx.translate(margin, margin);
-    ctx.scale(scale, scale);
-    ctx.translate(-minX, -minY);
+    // Draw Travel Moves (Red)
+    if (showTravelCheckbox.checked) {
+        ctx.beginPath();
+        ctx.strokeStyle = "#cf6679";
+        ctx.lineWidth = 1;
+        let currentPos = { x: 0, y: 0 };
+        imagePolylines.forEach((poly) => {
+            if (poly.length === 0) return;
+            const canvasFrom = bedToCanvas(currentPos.x - offsetX, currentPos.y - offsetY);
+            const canvasTo = bedToCanvas(poly[0].x, poly[0].y);
+            ctx.moveTo(canvasFrom.x, canvasFrom.y);
+            ctx.lineTo(canvasTo.x, canvasTo.y);
+            currentPos = { x: poly[poly.length - 1].x + offsetX, y: poly[poly.length - 1].y + offsetY };
+        });
+        ctx.stroke();
+    }
 
     // Draw all paths
     ctx.strokeStyle = "#03dac6";
-    ctx.lineWidth = 1 / scale;
+    ctx.lineWidth = 1;
     ctx.beginPath();
     
     imagePolylines.forEach(poly => {
       if (poly.length > 0) {
-        ctx.moveTo(poly[0].x, poly[0].y);
+        const start = bedToCanvas(poly[0].x, poly[0].y);
+        ctx.moveTo(start.x, start.y);
         for (let i = 1; i < poly.length; i++) {
-          ctx.lineTo(poly[i].x, poly[i].y);
+          const pt = bedToCanvas(poly[i].x, poly[i].y);
+          ctx.lineTo(pt.x, pt.y);
         }
       }
     });
     
     ctx.stroke();
-    ctx.restore();
 
     statsDisplay.style.display = "flex";
     pathCount.textContent = `${imagePolylines.length} Pfade`;
